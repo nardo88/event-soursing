@@ -26,9 +26,22 @@ app.get('/connect', (req, res) => {
     // подписываемся на событие. on - будет срабатывать неограниченное 
     // количество раз
     emitter.on('newMessage', (message) => {
-        res.write(message)
+        res.write(`data: ${JSON.stringify(message)} \n\n`)
     })
 })
+
+// add new message
+app.post('/new-messages', ((req, res) => {
+    // получаем сообщение из тела запроса
+    const message = req.body;
+    // создаем событие и передаем в него сообщение
+    emitter.emit('newMessage', message)
+    // возращаем статус 200
+    res.json({
+        status: 200
+    })
+}))
+
 // start our server
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
 
